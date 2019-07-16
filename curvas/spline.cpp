@@ -3,8 +3,8 @@
 #include "spline.h"
 
 Spline::Spline(){
-    this->aviao = new ObjModelLoader("/home/user/Qt Creator Projects/Curvas/Modelador3D/data/obj/Aviao.obj", "Aviao");
-    //aviao->setSombra(true);
+    this->aviao = new ObjModelLoader("../modelador-3d-curvas/data/obj/Aviao.obj", "Aviao");
+    aviao->setSombra(true);
     p = new Vetor3D[4];
     this->setMode(SplineMode::BSPLINE);
 
@@ -272,7 +272,7 @@ void Spline::desenhaCaminho(){
         glRotated(90, 0, 1, 0);
         glRotated(180, 1, 0, 0);
         glPushMatrix();
-            glColor3f(0,0,0);
+            glColor3f(1,0,1);
             glutSolidCone(0.05,0.05,10,10);
         glPopMatrix();
     glPopMatrix();
@@ -304,7 +304,7 @@ void Spline::desenharComSpline(bool animar){
     };
 
     glPushMatrix();
-        glColor3f(1, 0, 0);
+        glColor3f(1, 0, 1);
         glMultTransposeMatrixd(T);
         glScaled(1,1,1);
         glRotated(180,0,0,1);

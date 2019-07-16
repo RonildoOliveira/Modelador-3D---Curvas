@@ -12,7 +12,8 @@ void PontoControle::desenha(){
     glTranslated(tx, ty, tz);
     if(!selecionado)glColor3f(1, 0, 0);
     else glColor3f(1, 1, 0);
-    glutSolidSphere(.1, 36, 36);
+    //glTranslatef(1.5,1.5,1.5);
+    glutSolidSphere(.1, 10, 10);
     glPopMatrix();
 }
 

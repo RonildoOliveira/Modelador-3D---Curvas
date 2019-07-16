@@ -218,21 +218,25 @@ void MainWindow::mudarOrtogonal()
 
 void MainWindow::mudarCurvaBezier()
 {
+    ui->curvaLabel->setText("Bezier");
     ui->openGLWidget->mudarCurva(SplineMode::BEZIER);
 }
 
 void MainWindow::mudarCurvaBSpline()
 {
+    ui->curvaLabel->setText("B-Spline");
     ui->openGLWidget->mudarCurva(SplineMode::BSPLINE);
 }
 
 void MainWindow::mudarCurvaHermite()
 {
+    ui->curvaLabel->setText("Hermite");
     ui->openGLWidget->mudarCurva(SplineMode::HERMITE);
 }
 
 void MainWindow::mudarCurvaCatmullrom()
 {
+    ui->curvaLabel->setText("Carmull-Rom");
     ui->openGLWidget->mudarCurva(SplineMode::CATMULLROM);
 }
 

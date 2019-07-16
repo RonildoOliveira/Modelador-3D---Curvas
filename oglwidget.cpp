@@ -22,8 +22,6 @@
 #include "curvas/pontocontrole.h"
 #include "curvas/spline.h"
 
-//Definir posição da luz
-//GLfloat posicao_luz[] = {5.1f,5.1f,5.1f,5.1f};
 float trans_obj = false;
 float trans_luz = false;
 
@@ -214,19 +212,6 @@ int OGLWidget::picking( GLint cursorX, GLint cursorY, int w, int h ) {
     glScaled(sx,sy,sz);
 
     renderizaCena();
-
-    /*
-    for (int i=0; i<pontosControle.size(); i++) {
-        Vetor3D p = pontosControle[i];
-        glPushMatrix();
-        glPushName(i+1);
-        glTranslatef(p.x,p.y,p.z);
-        glutSolidSphere(0.2,slices,stacks);
-        glPopName();
-        glPopMatrix();
-    }
-    */
-
     glPopMatrix();
 
     //fim-de acordo com a implementacao
@@ -481,6 +466,7 @@ void OGLWidget::paintGL()
     glViewport(0, 0, width, height);
     glLoadIdentity();
     gluLookAt(cam->e.x,cam->e.y,cam->e.z, cam->c.x,cam->c.y,cam->c.z, cam->u.x,cam->u.y,cam->u.z);
+
     renderizaCena();
 
     glScissor(0, 3*height/4, width/3, height/3);
@@ -526,29 +512,6 @@ void OGLWidget::displayPerspective(){
     float right = top * ar;
     float left = -top * ar;
     float M[4][4];
-
-    //Matriz de projecão
-    /*
-    M[0][0] = 2 * near / (right - left);
-    M[0][1] = 0;
-    M[0][2] = 0;
-    M[0][3] = 0;
-
-    M[1][0] = 0;
-    M[1][1] = 2 * near / (top - bottom);
-    M[1][2] = 0;
-    M[1][3] = 0;
-
-    M[2][0] = (right + left) / (right - left);
-    M[2][1] = (top + bottom) / (top - bottom);
-    M[2][2] = -(fovy + near) / (fovy - near);
-    M[2][3] = -1;
-
-    M[3][0] = 0;
-    M[3][1] = 0;
-    M[3][2] = -2 * fovy * near / (fovy - near);
-    M[3][3] = 0;
-    */
 
     float zNeg[16] = {
                             2 * near / (right - left), 0.0, 0.0, 0.0,
@@ -843,15 +806,15 @@ void OGLWidget::addArvoreListaModelos(){ this->listaModelos.push_back(new Tree()
 
 void OGLWidget::addLuzListaModelos() { this->listaModelos.push_back(new Luz()); }
 
-void OGLWidget::addKratosListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../Modelador3D/data/obj/Kratos.obj", "Kratos")); }
-void OGLWidget::addBoyListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../Modelador3D/data/obj/Boy.obj", "Boy")); }
-void OGLWidget::addMarioListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../Modelador3D/data/obj/Mario.obj", "Mario")); }
-void OGLWidget::addShelfListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../Modelador3D/data/obj/Shelf.obj", "Shelf")); }
-void OGLWidget::addAviaoListaModelos() { this->listaModelos.push_back(new ObjModelLoader("/home/user/Qt Creator Projects/Curvas/Modelador3D/data/obj/Aviao.obj", "Aviao")); }
+void OGLWidget::addKratosListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../modelador-3d-curvas/data/obj/Kratos.obj", "Kratos")); }
+void OGLWidget::addBoyListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../modelador-3d-curvas/data/obj/Boy.obj", "Boy")); }
+void OGLWidget::addMarioListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../modelador-3d-curvas/data/obj/Mario.obj", "Mario")); }
+void OGLWidget::addShelfListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../modelador-3d-curvas/data/obj/Shelf.obj", "Shelf")); }
+void OGLWidget::addAviaoListaModelos() { this->listaModelos.push_back(new ObjModelLoader("../modelador-3d-curvas/data/obj/Aviao.obj", "Aviao")); }
 
-void OGLWidget::addEsqueletoListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../Modelador3D/data/3ds/Esqueleto.3ds", "Esqueleto")); }
-void OGLWidget::addCachorroListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../Modelador3D/data/3ds/Cachorro.3ds", "Cachorro")); }
-void OGLWidget::addLoboListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../Modelador3D/data/3ds/Lobo.3ds", "Lobo"));}
+void OGLWidget::addEsqueletoListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../modelador-3d-curvas/data/3ds/Esqueleto.3ds", "Esqueleto")); }
+void OGLWidget::addCachorroListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../modelador-3d-curvas/data/3ds/Cachorro.3ds", "Cachorro")); }
+void OGLWidget::addLoboListaModelos() { this->listaModelos.push_back(new TdsModelLoader("../modelador-3d-curvas/data/3ds/Lobo.3ds", "Lobo"));}
 
 void OGLWidget::increaseCont() { this->cont++; }
 void OGLWidget::decreaseCont() { this->cont--; }
@@ -932,7 +895,30 @@ void OGLWidget::mudaCamera(int numeroCamera)
 }
 
 void OGLWidget::carregarEstado(){
-    std::ifstream file("../Modelador3D/state.txt");
+    //medidas desesperadas
+    listaModelos.clear();
+
+    std::ifstream file("../modelador-3d-curvas/state.txt");
+    if (!file) {
+        cout << "Erro de leitura";
+    }
+
+    float tx, ty, tz = 0;
+
+    while(!file.eof()){
+        file >> tx >> ty >> tz;
+        cout << tx << ty << tz;
+        spline->addPontoControle(Vetor3D(tx, ty, tz));
+        listaModelos.push_back(new PontoControle(Vetor3D(tx, ty,  tz)));
+    }
+/*
+    for(Vetor3D v : spline->getPontosControle()){
+        listaModelos.push_back(new PontoControle(v));
+    }
+*/
+    //listaModelos.pop_back();
+    /*
+    std::ifstream file("../modelador-3d-curvas/state.txt");
     if (!file) {
         cout << "Erro de leitura";
     }
@@ -987,7 +973,7 @@ void OGLWidget::carregarEstado(){
 
         else if(nomeModelo == "Kratos" || nomeModelo == "Mario" || nomeModelo == "Boy"
                 || nomeModelo == "Shelf" || nomeModelo == "Aviao"){
-            string diretorio = "../Modelador3D/data/obj/";
+            string diretorio = "../modelador-3d-curvas/data/obj/";
             string extensao = ".obj";
 
             file >> tx >> ty >> tz;
@@ -1000,7 +986,7 @@ void OGLWidget::carregarEstado(){
         }
 
         else if(nomeModelo == "Esqueleto" || nomeModelo == "Cachorro" || nomeModelo == "Lobo"){
-            string diretorio = "../Modelador3D/data/3ds/";
+            string diretorio = "../modelador-3d-curvas/data/3ds/";
             string extensao = ".3ds";
 
             file >> tx >> ty >> tz;
@@ -1015,7 +1001,7 @@ void OGLWidget::carregarEstado(){
     }
 
     listaModelos.pop_back();
-
+    */
 }
 
 void OGLWidget::carregarModelo3DOBJ(string caminho, string nome)
@@ -1039,7 +1025,7 @@ void OGLWidget::iniciaLuz()
 
 void OGLWidget::carregaCamera()
 {
-    std::ifstream file("../Modelador3D/camera.txt");
+    std::ifstream file("../modelador-3d-curvas/camera.txt");
     string nomeModelo;
 
     GLfloat ex;
@@ -1069,7 +1055,7 @@ void OGLWidget::carregaCamera()
 
 void OGLWidget::salvaCamera()
 {
-    ofstream myfile ("../Modelador3D/camera.txt");
+    ofstream myfile ("../modelador-3d-curvas/camera.txt");
 
     myfile << "CameraDistante";
 
@@ -1096,7 +1082,7 @@ void OGLWidget::salvaCamera()
 
 void OGLWidget::salvarEstado()
 {
-    ofstream myfile ("../Modelador3D/state.txt");
+    ofstream myfile ("../modelador-3d-curvas/state.txt");
     if (myfile.is_open())
     {
         for (int index = 0; index < listaModelos.size(); ++index) {
@@ -1154,11 +1140,6 @@ void OGLWidget::percorrer()
 void OGLWidget::iniciaCurva(){
     spline = new Spline();
 
-    spline->addPontoControle(Vetor3D(-7, 0,  7));
-    spline->addPontoControle(Vetor3D(  0, 5,  7));
-    spline->addPontoControle(Vetor3D( 5, 7,  10));
-    spline->addPontoControle(Vetor3D( 5, 4,  7));
-
     //spline->addPontoControle(Vetor3D( 7, 0,  6));
     //spline->addPontoControle(Vetor3D( 8, 9,  0 ));
     //spline->addPontoControle(Vetor3D( 12, 10, 7));
@@ -1172,10 +1153,12 @@ void OGLWidget::iniciaCurva(){
 
     //spline->addPontoControle(Vetor3D(-7, 0, 7));
 
+    /*
     for(Vetor3D v : spline->getPontosControle()){
         //pontosControle.push_back(new PontoControle(v));
         listaModelos.push_back(new PontoControle(v));
     }
+    */
 
 }
 
