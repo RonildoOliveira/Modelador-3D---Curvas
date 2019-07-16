@@ -28,4 +28,8 @@ sudo apt-get install libsdl-image1.2-dev
 
 ```
 
-* **Ronildo Oliveira** - *Trabalho Inicial* - [GitHub](https://github.com/RonildoOliveira)
+### Screens
+
+![Screen](/images/screen_01.png)
+
+* **Ronildo Oliveira** - [GitHub](https://github.com/RonildoOliveira)
